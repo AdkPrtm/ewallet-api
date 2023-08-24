@@ -26,7 +26,7 @@ class DataPlanController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return ResponseFormatter::error([], 'Validation Failed', 400);
+            return ResponseFormatter::error(message: 'Validation Failed', code : 400);
 
         }
 
@@ -41,17 +41,17 @@ class DataPlanController extends Controller
         $dataPlan = DataPlan::find($request->data_plan_id);
 
         if (!$dataPlan) {
-            return ResponseFormatter::error([], 'Data plan not found', 400);
+            return ResponseFormatter::error(message: 'Data plan not found', code : 400);
         }
 
         $pinChecker = pinChecker($request->pin);
 
         if (!$pinChecker) {
-            return ResponseFormatter::error([], 'Your pin is wrong', 400);
+            return ResponseFormatter::error(message: 'Your pin is wrong', code : 400);
         }
 
         if ($userWallet->balance < $dataPlan->price) {
-            return ResponseFormatter::error([], 'Your balance is not enough', 400);
+            return ResponseFormatter::error(message: 'Your balance is not enough', code : 400);
         }
         
         DB::beginTransaction();
@@ -75,10 +75,10 @@ class DataPlanController extends Controller
             $userWallet->decrement('balance', $dataPlan->price);
             DB::commit();
 
-            return ResponseFormatter::success([], 'Buy data plan success', 200);
+            return ResponseFormatter::success('', 'Buy data plan success', 200);
         } catch (\Throwable $th) {
             DB::rollBack();
-            return ResponseFormatter::error([], $th->getMessage(), 500);
+            return ResponseFormatter::error(message: $th->getMessage(), code: 500);
         }
     }
 }

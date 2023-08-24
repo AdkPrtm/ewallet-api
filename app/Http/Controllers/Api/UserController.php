@@ -15,7 +15,7 @@ class UserController extends Controller
     {
         $user = getUser(auth()->user()->id);
 
-        return ResponseFormatter::success([$user], '', 200);
+        return ResponseFormatter::success($user, '', 200);
     }
 
     public function getUserByUsername(Request $request, $username)
@@ -30,7 +30,7 @@ class UserController extends Controller
             return $item;
         });
 
-        return ResponseFormatter::success([$user], '', 200);
+        return ResponseFormatter::success($user, '', 200);
     }
 
     public function update(Request $request)
@@ -42,14 +42,14 @@ class UserController extends Controller
             if ($request->username != $user->username) {
                 $isExistUsername = User::where('username', $request->username)->exists();
                 if ($isExistUsername) {
-                    return ResponseFormatter::error([], 'This username already taken', 400);
+                    return ResponseFormatter::error(message: 'This username already taken', code : 400);
                 }
             }
 
             if ($request->email != $user->email) {
                 $isExistEmail = User::where('email', $request->email)->exists();
                 if ($isExistEmail) {
-                    return ResponseFormatter::error([], 'This email already taken', 400);
+                    return ResponseFormatter::error(message: 'This email already taken', code : 400);
                 }
             }
 
@@ -75,9 +75,9 @@ class UserController extends Controller
             }
 
             $user->update($data);
-            return ResponseFormatter::success([], 'User Updated', 200);
+            return ResponseFormatter::success('', 'User Updated', 200);
         } catch (\Throwable $th) {
-            return ResponseFormatter::error([], $th->getMessage(), 500);
+            return ResponseFormatter::error(message: $th->getMessage(), code: 500);
         }
     }
 
@@ -88,7 +88,7 @@ class UserController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return ResponseFormatter::error([], 'Validation Failed', 400);
+            return ResponseFormatter::error(message: 'Validation Failed', code : 400);
         }
 
         $isExist = User::where('email', $request->email)->exists();
@@ -99,6 +99,6 @@ class UserController extends Controller
     {
         auth()->logout();
 
-        return ResponseFormatter::success([], 'Log out success', 200);
+        return ResponseFormatter::success('', 'Log out success', 200);
     }
 }

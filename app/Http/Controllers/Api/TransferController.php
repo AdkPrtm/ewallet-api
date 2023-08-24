@@ -28,7 +28,7 @@ class TransferController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return ResponseFormatter::error([], 'Validation Failed', 400);
+            return ResponseFormatter::error(message: 'Validation Failed', code : 400);
         }
 
         $sender = auth()->user();
@@ -41,21 +41,21 @@ class TransferController extends Controller
         $pinChecker = pinChecker($request->pin);
 
         if (!$pinChecker) {
-            return ResponseFormatter::error([], 'Your PIN is wrong', 400);
+            return ResponseFormatter::error(message: 'Your PIN is wrong', code : 400);
         }
 
         if (!$receiver) {
-            return ResponseFormatter::error([], 'User receiver not found', 400);
+            return ResponseFormatter::error(message: 'User receiver not found', code : 400);
         }
 
         if ($sender->id == $receiver->id) {
-            return ResponseFormatter::error([], 'You cant send to yourself', 400);
+            return ResponseFormatter::error(message: 'You cant send to yourself', code : 400);
         }
 
         $senderWallet = Wallet::where('user_id', $sender->id)->first();
 
         if ($senderWallet->balance < $request->amount) {
-            return ResponseFormatter::error([], 'You balance not enough', 400);
+            return ResponseFormatter::error(message: 'You balance not enough', code : 400);
         }
 
         DB::beginTransaction();
@@ -99,10 +99,10 @@ class TransferController extends Controller
             ]);
 
             DB::commit();
-            return ResponseFormatter::success([], 'Transfer Success', 200);
+            return ResponseFormatter::success('', 'Transfer Success', 200);
         } catch (\Throwable $th) {
             DB::rollBack();
-            return ResponseFormatter::error([], $th->getMessage(), 500);
+            return ResponseFormatter::error(message: $th->getMessage(), code: 500);
         }
     }
 }

@@ -21,6 +21,6 @@ class OperatorCardController extends Controller
             $item->thumbnail =$item->thumbnail ? url($item->thumbnail) : "";
             return $item;
         });
-        return ResponseFormatter::success([$operatorCard], '', 200);
+        return ResponseFormatter::success($operatorCard, '', 200);
     }
 }

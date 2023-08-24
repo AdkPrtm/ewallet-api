@@ -16,7 +16,7 @@ class WalletController extends Controller
 
         $wallet = Wallet::select('pin', 'balance', 'card_number')->where('user_id', $user->id)->first();
 
-        return ResponseFormatter::success([$wallet], '', 200);
+        return ResponseFormatter::success($wallet, '', 200);
     }
 
     public function update(Request $request)
@@ -27,11 +27,11 @@ class WalletController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return ResponseFormatter::error([], 'Validation Failed', 400);
+            return ResponseFormatter::error(message: 'Validation Failed', code : 400);
         }
 
         if (!pinChecker($request->previous_pin)) {
-            return ResponseFormatter::error([], 'Your old pin is wrong', 400);
+            return ResponseFormatter::error(message: 'Your old pin is wrong', code : 400);
         }
 
         $user = auth()->user();
@@ -40,9 +40,9 @@ class WalletController extends Controller
             Wallet::where('user_id', $user->id)
                 ->update(['pin' => $request->new_pin]);
 
-            return ResponseFormatter::success([], 'Pin updated', 200);
+            return ResponseFormatter::success('', 'Pin updated', 200);
         } catch (\Throwable $th) {
-            return ResponseFormatter::error([], $th->getMessage(), 500);
+            return ResponseFormatter::error(message: $th->getMessage(), code: 500);
         }
     }
 }

@@ -37,6 +37,6 @@ class TransactionController extends Controller
             return $item;
         });
 
-        return ResponseFormatter::success([$transaction], '', 200);
+        return ResponseFormatter::success($transaction, '', 200);
     }
 }

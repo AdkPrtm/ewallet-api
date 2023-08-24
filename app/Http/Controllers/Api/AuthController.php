@@ -11,6 +11,8 @@ use App\Models\Wallet;
 use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
+use function Laravel\Prompts\error;
+
 class AuthController extends Controller
 {
 
@@ -26,19 +28,19 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return ResponseFormatter::error([], 'Validation Failed', 400);
+            return ResponseFormatter::error(message: 'Validation Failed', code : 400);
         }
 
         $user = User::where('email', $request->email)->exists();
 
         if ($user) {
-            return ResponseFormatter::error([], 'Email already taken', 400);
+            return ResponseFormatter::error(message: 'Email already taken', code : 400);
         }
 
         $user = User::where('username', $request->username)->exists();
 
         if ($user) {
-            return ResponseFormatter::error([], 'Username already taken', 400);
+            return ResponseFormatter::error(message: 'Username already taken', code : 400);
         }
 
 
@@ -82,10 +84,10 @@ class AuthController extends Controller
             $userResponse->token_expires_in = JWTAuth::factory()->getTTL() * 180;
             $userResponse->token_type = 'bearer';
 
-            return ResponseFormatter::success([$userResponse], '', 201);
+            return ResponseFormatter::success($userResponse, '', 201);
         } catch (\Throwable $th) {
             DB::rollback();
-            return ResponseFormatter::error([], $th->getMessage(), 500);
+            return ResponseFormatter::error(message: $th->getMessage(), code: 500);
         }
     }
 
@@ -99,14 +101,14 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return ResponseFormatter::error([], 'Validation Failed', 400);
+            return ResponseFormatter::error(message: 'Validation Failed', code : 400);
         }
 
         try {
             $token = JWTAuth::attempt($credentials);
 
             if (!$token) {
-                return ResponseFormatter::error([], 'Invalid Credentials', 400);
+                return ResponseFormatter::error(message: 'Invalid Credentials', code: 400);
             }
 
             $userResponse = getUser($request->email);
@@ -114,9 +116,9 @@ class AuthController extends Controller
             $userResponse->token_expires_in = JWTAuth::factory()->getTTL() * 180;
             $userResponse->token_type = 'bearer';
 
-            return ResponseFormatter::success([$userResponse], '', 200);
+            return ResponseFormatter::success($userResponse, '', 200);
         } catch (\Tymon\JWTAuth\Exceptions\JWTException $th) {
-                return ResponseFormatter::error([], 'Something went wrong', 500);
+                return ResponseFormatter::error(message: 'Something went wrong', code: 500);
         }
     }
 

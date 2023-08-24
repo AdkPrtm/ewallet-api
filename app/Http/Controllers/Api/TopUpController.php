@@ -25,14 +25,14 @@ class TopUpController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return ResponseFormatter::error([], 'Validation Failed', 400);
+            return ResponseFormatter::error(message: 'Validation Failed', code : 400);
             
         }
 
         $pinChecker = pinChecker($request->pin);
 
         if (!$pinChecker) {
-            return ResponseFormatter::error([], 'Your pin is wrong', 400);
+            return ResponseFormatter::error(message: 'Your pin is wrong', code : 400);
         }
 
         $transactionType = TransactionType::where('code', 'top_up')->first();
@@ -63,10 +63,10 @@ class TopUpController extends Controller
 
             DB::commit();
 
-            return ResponseFormatter::success([$midtrans], '', 200);
+            return ResponseFormatter::success($midtrans, '', 200);
         } catch (\Throwable $th) {
             DB::rollBack();
-            return ResponseFormatter::error([], $th->getMessage(), 500);
+            return ResponseFormatter::error(message: $th->getMessage(), code: 500);
         }
     }
 

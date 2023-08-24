@@ -19,6 +19,6 @@ class TipController extends Controller
             return $item;
         });
 
-        return ResponseFormatter::success([$tips], '', 200);
+        return ResponseFormatter::success($tips, '', 200);
     }
 }

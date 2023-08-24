@@ -27,6 +27,6 @@ class TransferHistoryController extends Controller
             return $receiverUser;
         });
 
-        return ResponseFormatter::success([$transferHistories], '', 200);
+        return ResponseFormatter::success($transferHistories, '', 200);
     }
 }

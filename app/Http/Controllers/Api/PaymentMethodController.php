@@ -17,7 +17,7 @@ class PaymentMethodController extends Controller
                 $item->thumbnail = $item->thumbnail ? url('banks/' . $item->thumbnail) : '';
                 return $item;
             });
-        return ResponseFormatter::success([$banks], '', 200);
+        return ResponseFormatter::success($banks, '', 200);
 
     }
 }
