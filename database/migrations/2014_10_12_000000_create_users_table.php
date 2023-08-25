@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('username')->unique();
             $table->string('password');
             $table->boolean('verified')->nullable();
-            $table->string('profile_picture')->default('profilepict.jpg');
+            $table->string('profile_picture')->nullable()->default('profilepict.jpg');
             $table->string('ktp')->nullable();
             $table->rememberToken();
             $table->timestamps();
