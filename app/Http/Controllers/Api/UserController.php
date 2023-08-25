@@ -42,14 +42,14 @@ class UserController extends Controller
             if ($request->username != $user->username) {
                 $isExistUsername = User::where('username', $request->username)->exists();
                 if ($isExistUsername) {
-                    return ResponseFormatter::error(message: 'This username already taken', code : 400);
+                    return ResponseFormatter::error(message: 'This username already taken', code: 400);
                 }
             }
 
             if ($request->email != $user->email) {
                 $isExistEmail = User::where('email', $request->email)->exists();
                 if ($isExistEmail) {
-                    return ResponseFormatter::error(message: 'This email already taken', code : 400);
+                    return ResponseFormatter::error(message: 'This email already taken', code: 400);
                 }
             }
 
@@ -81,18 +81,25 @@ class UserController extends Controller
         }
     }
 
-    public function isEmailExist(Request $request)
+    public function isDataExist(Request $request)
     {
-        $validator = Validator::make($request->only('email'), [
-            'email' => 'required|email'
+        $validator = Validator::make($request->only('email', 'username'), [
+            'email' => 'required|email',
+            'username' => 'required'
         ]);
 
         if ($validator->fails()) {
-            return ResponseFormatter::error(message: 'Validation Failed', code : 400);
+            return ResponseFormatter::error(message: 'Validation Failed', code: 400);
         }
 
-        $isExist = User::where('email', $request->email)->exists();
-        return ResponseFormatter::success(['is_email_exists' => $isExist], '', 200);
+        $isEmailExist = User::where('email', $request->email)->exists();
+        $isUsernameExist = User::where('username', $request->username)->exists();
+        $postData = array(
+            'is_email_exists' => $isEmailExist,
+            'is_username_exist' => $isUsernameExist,
+        );
+        $response = json_encode($postData);
+        return ResponseFormatter::success($response, '', 200);
     }
 
     public function logout()

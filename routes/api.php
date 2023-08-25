@@ -30,7 +30,7 @@ Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
 Route::post('webhooks', [WebhookController::class, 'update']);
-Route::post('isemailexists', [UserController::class, 'isEmailExist']);
+Route::post('isdataexists', [UserController::class, 'isDataExist']);
 
 Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('topup', [TopUpController::class, 'store']);
