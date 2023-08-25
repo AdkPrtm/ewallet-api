@@ -17,6 +17,7 @@ class PaymentMethodSeeder extends Seeder
             [
                 'name' => 'Bank Ewallet',
                 'code' => 'ewallet',
+                'thumbnail' => 'bwa.png',
                 'status' => 'active',
                 'created_at' => now(),
                 'updated_at' => now()
@@ -24,6 +25,7 @@ class PaymentMethodSeeder extends Seeder
             [
                 'name' => 'Bank BNI',
                 'code' => 'bni_va',
+                'thumbnail' => 'bni.png',
                 'status' => 'active',
                 'created_at' => now(),
                 'updated_at' => now()
@@ -31,6 +33,7 @@ class PaymentMethodSeeder extends Seeder
             [
                 'name' => 'Bank BCA',
                 'code' => 'bca_va',
+                'thumbnail' => 'bca.png',
                 'status' => 'active',
                 'created_at' => now(),
                 'updated_at' => now()
