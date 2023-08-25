@@ -28,44 +28,71 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return ResponseFormatter::error(message: 'Validation Failed', code : 400);
+            return ResponseFormatter::error(message: 'Validation Failed', code: 400);
         }
 
         $user = User::where('email', $request->email)->exists();
 
         if ($user) {
-            return ResponseFormatter::error(message: 'Email already taken', code : 400);
+            return ResponseFormatter::error(message: 'Email already taken', code: 400);
         }
 
         $user = User::where('username', $request->username)->exists();
 
         if ($user) {
-            return ResponseFormatter::error(message: 'Username already taken', code : 400);
+            return ResponseFormatter::error(message: 'Username already taken', code: 400);
         }
 
 
         DB::beginTransaction();
 
         try {
-            $profilePicture = null;
-            if ($request->profile_picture) {
-                $profilePicture = uploadBase64Image($request->profile_picture);
+
+
+
+            if ($request->profile_picture != null) {
+                $profilePicture = null;
+                if ($request->profile_picture) {
+                    $profilePicture = uploadBase64Image($request->profile_picture);
+                }
             }
 
-            $ktp = null;
-            if ($request->ktp) {
-                $ktp = uploadBase64Image($request->ktp);
+            if ($request->ktp != null) {
+                $ktp = null;
+                if ($request->ktp) {
+                    $ktp = uploadBase64Image($request->ktp);
+                }
             }
-
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'username' => $request->username,
-                'password' => $request->password,
-                'profile_picture' => $profilePicture,
-                'ktp' => $ktp,
-                'verified' => ($ktp) ? true : false
-            ]);
+            if ($profilePicture != null) {
+                if ($ktp != null) {
+                    $user = User::create([
+                        'name' => $request->name,
+                        'email' => $request->email,
+                        'username' => $request->username,
+                        'password' => $request->password,
+                        'profile_picture' => $profilePicture,
+                        'ktp' => $ktp,
+                        'verified' => ($ktp) ? true : false
+                    ]);
+                } else {
+                    $user = User::create([
+                        'name' => $request->name,
+                        'email' => $request->email,
+                        'username' => $request->username,
+                        'password' => $request->password,
+                        'profile_picture' => $profilePicture,
+                        'verified' => ($ktp) ? true : false
+                    ]);
+                }
+            } else {
+                $user = User::create([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'username' => $request->username,
+                    'password' => $request->password,
+                    'verified' => ($ktp) ? true : false
+                ]);
+            }
 
             $cardNumber = $this->generateCardNumber(16);
 
@@ -101,7 +128,7 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return ResponseFormatter::error(message: 'Validation Failed', code : 400);
+            return ResponseFormatter::error(message: 'Validation Failed', code: 400);
         }
 
         try {
@@ -118,7 +145,7 @@ class AuthController extends Controller
 
             return ResponseFormatter::success($userResponse, '', 200);
         } catch (\Tymon\JWTAuth\Exceptions\JWTException $th) {
-                return ResponseFormatter::error(message: 'Something went wrong', code: 500);
+            return ResponseFormatter::error(message: 'Something went wrong', code: 500);
         }
     }
 
