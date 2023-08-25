@@ -48,20 +48,15 @@ class AuthController extends Controller
 
         try {
 
-
+            $profilePicture = null;
+            $ktp = null;
 
             if ($request->profile_picture != null) {
-                $profilePicture = null;
-                if ($request->profile_picture) {
-                    $profilePicture = uploadBase64Image($request->profile_picture);
-                }
+                $profilePicture = uploadBase64Image($request->profile_picture);
             }
 
             if ($request->ktp != null) {
-                $ktp = null;
-                if ($request->ktp) {
-                    $ktp = uploadBase64Image($request->ktp);
-                }
+                $ktp = uploadBase64Image($request->ktp);
             }
             if ($profilePicture != null) {
                 if ($ktp != null) {
