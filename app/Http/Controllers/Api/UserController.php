@@ -94,12 +94,11 @@ class UserController extends Controller
 
         $isEmailExist = User::where('email', $request->email)->exists();
         $isUsernameExist = User::where('username', $request->username)->exists();
-        $postData = array(
+        
+        return ResponseFormatter::success([
             'is_email_exists' => $isEmailExist,
             'is_username_exist' => $isUsernameExist,
-        );
-        $response = json_encode($postData);
-        return ResponseFormatter::success($response, '', 200);
+        ], '', 200);
     }
 
     public function logout()
