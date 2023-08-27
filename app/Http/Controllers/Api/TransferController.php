@@ -99,7 +99,7 @@ class TransferController extends Controller
             ]);
 
             DB::commit();
-            return ResponseFormatter::success('', 'Transfer Success', 200);
+            return ResponseFormatter::success('', 'Transfer Success', 201);
         } catch (\Throwable $th) {
             DB::rollBack();
             return ResponseFormatter::error(message: $th->getMessage(), code: 500);

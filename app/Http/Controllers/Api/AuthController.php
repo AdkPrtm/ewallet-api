@@ -11,8 +11,6 @@ use App\Models\Wallet;
 use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-use function Laravel\Prompts\error;
-
 class AuthController extends Controller
 {
 
@@ -103,7 +101,7 @@ class AuthController extends Controller
 
             $userResponse = getUser($user->id);
             $userResponse->token = $token;
-            $userResponse->token_expires_in = JWTAuth::factory()->getTTL() * 180;
+            $userResponse->token_expires_in = JWTAuth::factory()->getTTL();
             $userResponse->token_type = 'bearer';
 
             return ResponseFormatter::success($userResponse, '', 201);

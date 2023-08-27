@@ -63,7 +63,7 @@ class TopUpController extends Controller
 
             DB::commit();
 
-            return ResponseFormatter::success($midtrans, '', 200);
+            return ResponseFormatter::success($midtrans, '', 201);
         } catch (\Throwable $th) {
             DB::rollBack();
             return ResponseFormatter::error(message: $th->getMessage(), code: 500);
