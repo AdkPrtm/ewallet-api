@@ -26,9 +26,9 @@ class JwtMiddleware
             } elseif ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException) {
                 try {
                     $newToken = auth()->refresh(true, true);
-                    return ResponseFormatter::error(data: [
+                    return ResponseFormatter::success(data: [
                         'token' => $newToken,
-                    ], message: 'Token is Expired', code: 400);
+                    ], message: 'Token is Expired', code: 200);
                 } catch (\Throwable) {
                     return ResponseFormatter::error('', 'Session have been expired, trying to relogin.', 401);
                 }
