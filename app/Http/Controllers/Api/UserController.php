@@ -83,7 +83,7 @@ class UserController extends Controller
 
     public function isDataExist(Request $request)
     {
-        $validator = Validator::make($request->only('email', 'username'), [
+        $validator = Validator::make($request->only('is_email_exists', 'is_username_exist'), [
             'is_email_exists' => 'required|email',
             'is_username_exist' => 'required'
         ]);
