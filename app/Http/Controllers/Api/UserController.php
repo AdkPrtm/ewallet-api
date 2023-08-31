@@ -92,8 +92,8 @@ class UserController extends Controller
             return ResponseFormatter::error(message: 'Validation Failed', code: 400);
         }
 
-        $isEmailExist = User::where('email', $request->email)->exists();
-        $isUsernameExist = User::where('username', $request->username)->exists();
+        $isEmailExist = User::where('email', $request->is_email_exists)->exists();
+        $isUsernameExist = User::where('username', $request->is_username_exist)->exists();
 
         return ResponseFormatter::success([
             'is_email_exists' => $isEmailExist,
