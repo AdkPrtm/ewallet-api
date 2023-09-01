@@ -83,9 +83,9 @@ class UserController extends Controller
 
     public function isDataExist(Request $request)
     {
-        $validator = Validator::make($request->only('is_email_exists', 'is_username_exist'), [
+        $validator = Validator::make($request->only('is_email_exists', 'is_username_exists'), [
             'is_email_exists' => 'required|email',
-            'is_username_exist' => 'required'
+            'is_username_exists' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -93,11 +93,11 @@ class UserController extends Controller
         }
 
         $isEmailExist = User::where('email', $request->is_email_exists)->exists();
-        $isUsernameExist = User::where('username', $request->is_username_exist)->exists();
+        $isUsernameExists = User::where('username', $request->is_username_exists)->exists();
 
         return ResponseFormatter::success([
             'is_email_exists' => $isEmailExist,
-            'is_username_exist' => $isUsernameExist,
+            'is_username_exist' => $isUsernameExists,
         ], '', 200);
     }
 
