@@ -97,7 +97,7 @@ class UserController extends Controller
 
         return ResponseFormatter::success([
             'is_email_exists' => $isEmailExist,
-            'is_username_exist' => $isUsernameExists,
+            'is_username_exists' => $isUsernameExists,
         ], '', 200);
     }
 
