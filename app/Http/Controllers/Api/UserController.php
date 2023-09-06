@@ -20,7 +20,7 @@ class UserController extends Controller
 
     public function getUserByUsername(Request $request, $username)
     {
-        $user = User::select('id', 'username', 'verified', 'profile_picture')
+        $user = User::select('id','name', 'username', 'verified', 'profile_picture')
             ->where('username', 'LIKE', '%' . $username . '%')
             ->where('id', '<>', auth()->user()->id)
             ->get();

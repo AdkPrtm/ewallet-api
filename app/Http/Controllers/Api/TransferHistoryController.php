@@ -19,6 +19,7 @@ class TransferHistoryController extends Controller
             ->select('receiver_id')
             ->where('sender_id', $sender->id)
             ->groupBy('receiver_id')
+            ->orderBy('created_at', 'asc')
             ->paginate($limit);
 
         $transferHistories->getCollection()->transform(function ($item) {
