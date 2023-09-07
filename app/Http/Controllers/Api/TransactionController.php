@@ -31,8 +31,9 @@ class TransactionController extends Controller
             $item->paymentMethod = clone $item->paymentMethod;
             $item->paymentMethod->thumbnail = $paymentMethodThumbnail;
 
-            $transactionType = $item->transactionType;
-            $item->transactionType->thumbnail = $transactionType->thumbnail ? url('transaction-type/' . $transactionType->thumbnail) : '';
+            $transactionTypeThumbnail = $item->transactionType->thumbnail ? url('transaction-type/' . $item->transactionType->thumbnail) : '';
+            $item->transactionType = clone $item->transactionType;
+            $item->transactionType->thumbnail = $transactionTypeThumbnail;
 
             return $item;
         });
