@@ -62,7 +62,7 @@ class TopUpController extends Controller
             $midtrans = $this->callMidtrans($params);
 
             DB::commit();
-
+            
             return ResponseFormatter::success($midtrans, '', 201);
         } catch (\Throwable $th) {
             DB::rollBack();

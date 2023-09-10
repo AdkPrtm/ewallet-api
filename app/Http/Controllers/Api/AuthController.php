@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
+use App\Models\TokenDevice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
@@ -22,7 +23,7 @@ class AuthController extends Controller
             'name' => 'required|string',
             'email' => 'required|email',
             'password' => 'required|string|min:6',
-            'pin' => 'required|digits:6'
+            'pin' => 'required|digits:6',
         ]);
 
         if ($validator->fails()) {
@@ -97,13 +98,26 @@ class AuthController extends Controller
             ]);
 
             $token = JWTAuth::attempt(['email' => $request->email, 'password' => $request->password]);
-            DB::commit();
-
+            
             $userResponse = getUser($user->id);
             $userResponse->token = $token;
             $userResponse->token_expires_in = JWTAuth::factory()->getTTL();
             $userResponse->token_type = 'bearer';
+            
+            $token = TokenDevice::where('user_id', $userResponse->id)->first();
+            
+            if (!$token) {
+                TokenDevice::create([
+                    'user_id' => $userResponse->id,
+                    'token_device' => $request->token_device,
+                ]);
+            } else {
+                TokenDevice::where('user_id', $userResponse->id)
+                ->update(['token_device' => $request->token_device]);
+            }
 
+            DB::commit();
+            
             return ResponseFormatter::success($userResponse, '', 201);
         } catch (\Throwable $th) {
             DB::rollback();
@@ -131,10 +145,23 @@ class AuthController extends Controller
                 return ResponseFormatter::error(message: 'Invalid Credentials', code: 400);
             }
 
+
             $userResponse = getUser($request->email);
             $userResponse->token = $token;
             $userResponse->token_expires_in = JWTAuth::factory()->getTTL() * 180;
             $userResponse->token_type = 'bearer';
+
+            $token = TokenDevice::where('user_id', $userResponse->id)->first();
+
+            if (!$token) {
+                TokenDevice::create([
+                    'user_id' => $userResponse->id,
+                    'token_device' => $request->token_device,
+                ]);
+            } else {
+                TokenDevice::where('user_id', $userResponse->id)
+                    ->update(['token_device' => $request->token_device]);
+            }
 
             return ResponseFormatter::success($userResponse, '', 200);
         } catch (\Tymon\JWTAuth\Exceptions\JWTException $th) {

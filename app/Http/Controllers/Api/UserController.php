@@ -20,7 +20,7 @@ class UserController extends Controller
 
     public function getUserByUsername(Request $request, $username)
     {
-        $user = User::select('id','name', 'username', 'verified', 'profile_picture')
+        $user = User::select('id', 'name', 'username', 'verified', 'profile_picture')
             ->where('username', 'LIKE', '%' . $username . '%')
             ->where('id', '<>', auth()->user()->id)
             ->get();
@@ -92,12 +92,14 @@ class UserController extends Controller
             return ResponseFormatter::error(message: 'Validation Failed', code: 400);
         }
 
+        $token = sendNotifToUser('fWIU1Y2XRJmJvzt3PtFNSM:APA91bElh-9kQYRY_qpYkwtGoVQDeNGlT4Sf-k4O5Qs3slrWNbrfZ75ZhbjWqMndb7lZ--5vgZAHy48MzsARaJ-jpIFZrD7ZPbvCsrut4GD9opeJDy4AhUUqJUuOciUlZYfauimAJ3Bc', 'From Laravel', 'FCM Message');
         $isEmailExist = User::where('email', $request->is_email_exists)->exists();
         $isUsernameExists = User::where('username', $request->is_username_exists)->exists();
 
         return ResponseFormatter::success([
             'is_email_exists' => $isEmailExist,
             'is_username_exists' => $isUsernameExists,
+            'token' => $token,
         ], '', 200);
     }
 

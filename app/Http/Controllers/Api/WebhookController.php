@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\TokenDevice;
 use App\Models\Transaction;
 use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use NumberFormatter;
 
 class WebhookController extends Controller
 {
@@ -15,6 +17,11 @@ class WebhookController extends Controller
         \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
         \Midtrans\Config::$isProduction = (bool) env('MIDTRANS_IS_PRODUCTION');
         $notif = new \Midtrans\Notification();
+
+        $amount = new NumberFormatter("en_US", NumberFormatter::CURRENCY);
+        $nominalTopup = $notif->gross_amount;
+        $nominalFormatter = $amount->formatCurrency((int)$nominalTopup, 'IDR');
+        $output = preg_replace( '/[^0-9,"."]/', '', $nominalFormatter );
 
         $transactionStatus = $notif->transaction_status;
         $type = $notif->payment_type;
@@ -55,9 +62,13 @@ class WebhookController extends Controller
                 $userId = $transaction->user_id;
 
                 $transaction->update(['status' => $status]);
-                
+
                 if ($status == 'Sukses') {
                     Wallet::where('user_id', $userId)->increment('balance', $transactionAmount);
+                    $tokenDevice = TokenDevice::where('user_id', $userId)->first();
+                    if ($tokenDevice) {
+                        sendNotifToUser($tokenDevice->token_device, 'Berhasil top up saldo Rp ' . $output, 'Cek selengkapnya disini');
+                    }
                 }
             }
 
